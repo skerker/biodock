@@ -1,1 +1,0 @@
-/MOUNTED_FILES/data/fastqs/D23-LowMg-RC_S2_R1_001.fastq.gz	D23-LowMg-RC_S2	D23-LowMg-RC_S2_R1_001

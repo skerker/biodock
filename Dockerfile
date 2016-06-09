@@ -9,15 +9,15 @@ MAINTAINER Will Rowe <will.rowe@liverpool.ac.uk>
 # Install core packages
 ################################################################################################
 RUN apt-get update && apt-get install -y \
-  git \
   curl \
   cmake \
-  libhdf5-serial-dev \
-  wget \
-  make \
-  unzip \
-  nano \
   dh-autoreconf \
+  git \
+  libhdf5-serial-dev \
+  make \
+  nano \
+  unzip \
+  wget \
   --force-yes
 
 
@@ -82,7 +82,7 @@ RUN cd /opt && \
   wget --no-check-certificate https://prodigal.googlecode.com/files/Prodigal-2.60.tar.gz && \
   tar -xvf Prodigal-2.60.tar.gz && \
   cd Prodigal-2.60 && \
-  make && ´\
+  make && \
   ln -s /opt/Prodigal-2.60/prodigal /usr/bin/prodigal && \
   cd / && \
   rm -rf /opt/Prodigal-2.60.tar.gz
