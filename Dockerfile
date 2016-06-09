@@ -1,10 +1,8 @@
 ################################################################################################
 # This is the Dockerfile for running bioinformatic analyses at the Hinton Lab (IIB).
 ################################################################################################
-
 FROM ubuntu:14.04
 MAINTAINER Will Rowe <will.rowe@liverpool.ac.uk>
-
 
 
 ################################################################################################
@@ -117,7 +115,7 @@ RUN apt-get install -y \
 ################################################################################################
 # Install Segemehl and dependencies
 ################################################################################################
-RUN cd /opt
+RUN cd /opt && \
   apt-get install -y lib32ncurses5-dev && \
   wget http://www.bioinf.uni-leipzig.de/Software/segemehl/segemehl_0_2_0.tar.gz && \
   tar -xvf segemehl_0_2_0.tar.gz && \
@@ -131,7 +129,7 @@ RUN cd /opt
 ################################################################################################
 # Install SMALT and dependencies
 ################################################################################################
-RUN cd /opt
+RUN cd /opt && \
     apt-get install -y python3-pip zlib1g-dev libncurses5-dev libncursesw5-dev && \
     wget http://downloads.sourceforge.net/project/mummer/mummer/3.23/MUMmer3.23.tar.gz && \
     tar -zxf MUMmer3.23.tar.gz && \
@@ -164,7 +162,8 @@ RUN cd /usr/bin && \
 ################################################################################################
 # Install Velvet
 ################################################################################################
-RUN git clone git://github.com/dzerbino/velvet && \
+RUN cd /opt && \
+  git clone git://github.com/dzerbino/velvet && \
   cd velvet && \
   make color && \
   ln -s /opt/velvet/velvet* /usr/bin/ && \
@@ -174,7 +173,8 @@ RUN git clone git://github.com/dzerbino/velvet && \
 ################################################################################################
 # Install VSearch
 ################################################################################################
-RUN git clone git://github.com/torognes/vsearch && \
+RUN cd /opt && \
+  git clone git://github.com/torognes/vsearch && \
   cd vsearch && \
   ./autogen.sh && \
   ./configure && \
@@ -182,7 +182,8 @@ RUN git clone git://github.com/torognes/vsearch && \
   make && \
   make install && \
   cp ./bin/vsearch /usr/bin/ && \
-  rm -rf /vsearch
+  cd / && \
+  rm -rf /opt/vsearch
 
 
 ################################################################################################
@@ -202,23 +203,22 @@ RUN apt-get install -y \
 
 
 ################################################################################################
-# Clone lab git, install scripts and clean cache
+# Clone lab gitlab project, install scripts, create bash profile and clean cache
 ################################################################################################
+RUN cd /opt && \
+  git clone https://gitlab.com/will_rowe/biodock.git && \
+  mkdir /opt/SCRIPT_bin && \
+  find /opt/biodock/00_SCRIPTS/ -type f -name '*.py' -exec cp {} /opt/00_SCRIPTS/SCRIPT_bin/ \; && \
+  find /opt/biodock/00_SCRIPTS/ -type f -name '*.pl' -exec cp {} /opt/00_SCRIPTS/SCRIPT_bin/ \; && \
+  find /opt/biodock/00_SCRIPTS/ -type f -name '*.sh' -exec cp {} /opt/00_SCRIPTS/SCRIPT_bin/ \; && \
+  ln -s /opt/00_SCRIPTS/SCRIPTS_bin/* /usr/bin/ && \
+  cp /opt/biodock/bashrc ~/.bashrc && \
+  rm -rf /var/lib/apt/lists/*
 
 
 ################################################################################################
-# Set up bash profile
-################################################################################################
-
-
-################################################################################################
-# Define working directory
+# Define working directory and define default command for container launch
 ################################################################################################
 RUN mkdir /SCRATCH
 WORKDIR /SCRATCH
-
-
-################################################################################################
-# Define default command on container launch
-################################################################################################
 CMD ["bash"]
