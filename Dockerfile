@@ -104,10 +104,10 @@ RUN cd /opt && \
 ################################################################################################
 RUN apt-get install -y \
   cpanminus=1.7001-1 \
-  fasttree=2.1.7-1
+  fasttree=2.1.7-1 \
   mafft=7.123-1 \
   mcl=1:12-135-2 \
-  parallel=20130922-1
+  parallel=20130922-1 \
   prank=0.0.140110-1 && \
   cpanm -f Bio::Roary
 
@@ -143,7 +143,7 @@ RUN cd /opt && \
     rm -rf MUMmer3.23.tar.gz && \
     wget http://downloads.sourceforge.net/project/smalt/smalt-0.7.6-bin.tar.gz && \
     tar -zxf smalt-0.7.6-bin.tar.gz && \
-    smalt-0.7.6-bin/smalt_x86_64 /usr/bin/smalt && \
+    cp smalt-0.7.6-bin/smalt_x86_64 /usr/bin/smalt && \
     rm -rf smalt-0.7.6-bin.tar.gz && \
     cd /
 
@@ -208,9 +208,9 @@ RUN apt-get install -y \
 RUN cd /opt && \
   git clone https://gitlab.com/will_rowe/biodock.git && \
   mkdir /opt/SCRIPT_bin && \
-  find /opt/biodock/00_SCRIPTS/ -type f -name '*.py' -exec cp {} /opt/00_SCRIPTS/SCRIPT_bin/ \; && \
-  find /opt/biodock/00_SCRIPTS/ -type f -name '*.pl' -exec cp {} /opt/00_SCRIPTS/SCRIPT_bin/ \; && \
-  find /opt/biodock/00_SCRIPTS/ -type f -name '*.sh' -exec cp {} /opt/00_SCRIPTS/SCRIPT_bin/ \; && \
+  find /opt/biodock/00_SCRIPTS/ -type f -name '*.py' -exec cp {} /opt/SCRIPT_bin/ \; && \
+  find /opt/biodock/00_SCRIPTS/ -type f -name '*.pl' -exec cp {} /opt/SCRIPT_bin/ \; && \
+  find /opt/biodock/00_SCRIPTS/ -type f -name '*.sh' -exec cp {} /opt/SCRIPT_bin/ \; && \
   ln -s /opt/00_SCRIPTS/SCRIPTS_bin/* /usr/bin/ && \
   cp /opt/biodock/bashrc ~/.bashrc && \
   rm -rf /var/lib/apt/lists/*

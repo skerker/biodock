@@ -108,7 +108,7 @@ alias mv='mv -iv'                           # Preferred 'mv' implementation
 alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
 alias l='ls -FGlAhp'                       # Preferred 'ls' implementation
 alias less='less -FSRXc'                    # Preferred 'less' implementation
-cd() { builtin cd "$@"; ll; }               # Always list directory contents upon 'cd'
+cd() { builtin cd "$@"; l; }               # Always list directory contents upon 'cd'
 alias cd..='cd ../'                         # Go back 1 directory level (for fast typers)
 alias ..='cd ../'                           # Go back 1 directory level
 alias ...='cd ../../'                       # Go back 2 directory levels
@@ -146,6 +146,12 @@ ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name end
 #   -----------------------------
 #   4. MESSAGES
 #   -----------------------------
+clear
+echo "###################################################################"
+date
 echo "Welcome to BioDock..."
-echo "View the GitLab page for an overview of how to use this container, the installed software and the bash shortcuts available."
-echo "or contact: will.rowe@liv.ac.uk"
+echo "View the GitLab page for an overview of how to use this container"
+echo "View the DockerHub page for a list of installed software"
+echo "Contact: will.rowe@liv.ac.uk"
+echo "###################################################################"
+echo " "
