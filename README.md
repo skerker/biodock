@@ -21,25 +21,25 @@ Contents
 1.	Running biodock
 ---
 
-If you are on a Mac, start your Docker machine:
+⋅⋅⋅If you are on a Mac, start your Docker machine:
 
 `docker-machine start MACHINE-NAME`
 `eval "$(docker-machine env MACHINE-NAME)"`
 
 
-Pull the biodock image from Docker Hub:
+⋅⋅⋅Pull the biodock image from Docker Hub:
 
 `docker pull wpmr/biodock:latest`
 
 
-Alternatively, clone this git and build the biodock image from the Dockerfile:
+⋅⋅⋅Alternatively, clone this git and build the biodock image from the Dockerfile:
 
 `git clone https://gitlab.com/will_rowe/biodock.git`
 `cd biodock`
 `docker build -t wpmr/biodock:latest .`
 
 
-Launch the Docker container, making sure to mount a volume (allowing you to transfer data in and out of the container):
+⋅⋅⋅Launch the Docker container, making sure to mount a volume (allowing you to transfer data in and out of the container):
 
 `docker run -itP -m 8g --name biodock -v /some/path/on/host/:/MOUNTED_VOLUME wpmr/biodock:latest`
 
@@ -61,13 +61,13 @@ Launch the Docker container, making sure to mount a volume (allowing you to tran
 2.	Usage
 ----
 
-This Docker container (and git repo) is intended to provide a standardised environment for running bioinformatics pipelines, scripts and software.
+⋅⋅⋅This Docker container (and git repo) is intended to provide a standardised environment for running bioinformatics pipelines, scripts and software.
 
 
-The container will launch bash by default, all software is in the path and scripts from the git repo are in /opt/SCRIPT_bin (also in path)
+⋅⋅⋅The container will launch bash by default, all software is in the path and scripts from the git repo are in /opt/SCRIPT_bin (also in path)
 
 
-A few helpful commands for managing the container:
+⋅⋅⋅A few helpful commands for managing the container:
 
 + Once exited, you can re-enter the container using the exec command:
 
@@ -88,6 +88,7 @@ A few helpful commands for managing the container:
 3. Notes
 ----
 
-+ The CPUs available to Docker are limited by the host machine running docker, so set the virtual machine to have the required number before running Docker.
+⋅⋅⋅The CPUs available to Docker are limited by the host machine running docker, so set the virtual machine to have the required number before running Docker.
 
-+ The Kernel scheduler will handle the resource contention in the case of multiple containers requiring multiple cores.
+
+⋅⋅⋅The Kernel scheduler will handle the resource contention in the case of multiple containers requiring multiple cores.
