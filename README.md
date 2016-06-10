@@ -83,9 +83,9 @@ Contents
 
   + Stop or remove all containers
 
-  `docker stop $(docker ps -a)`
+  `docker stop $(docker ps -aq)`
 
-  `docker rm $(docker ps -a)`
+  `docker rm $(docker ps -aq)`
 
 
 
