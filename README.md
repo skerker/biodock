@@ -21,39 +21,39 @@ Contents
 1.	Running biodock
 ---
 
-⋅⋅⋅If you are on a Mac, start your Docker machine:
+  If you are on a Mac, start your Docker machine:
 
-`docker-machine start MACHINE-NAME`
-`eval "$(docker-machine env MACHINE-NAME)"`
-
-
-⋅⋅⋅Pull the biodock image from Docker Hub:
-
-`docker pull wpmr/biodock:latest`
+  `docker-machine start MACHINE-NAME`
+  `eval "$(docker-machine env MACHINE-NAME)"`
 
 
-⋅⋅⋅Alternatively, clone this git and build the biodock image from the Dockerfile:
+  Pull the biodock image from Docker Hub:
 
-`git clone https://gitlab.com/will_rowe/biodock.git`
-`cd biodock`
-`docker build -t wpmr/biodock:latest .`
+  `docker pull wpmr/biodock:latest`
 
 
-⋅⋅⋅Launch the Docker container, making sure to mount a volume (allowing you to transfer data in and out of the container):
+  Alternatively, clone this git and build the biodock image from the Dockerfile:
 
-`docker run -itP -m 8g --name biodock -v /some/path/on/host/:/MOUNTED_VOLUME wpmr/biodock:latest`
+  `git clone https://gitlab.com/will_rowe/biodock.git`
+  `cd biodock`
+  `docker build -t wpmr/biodock:latest .`
 
-+ -i = keep STDIN open even if not attached
 
-+ -t = allocate a pseudo-tty
+  Launch the Docker container, making sure to mount a volume (allowing you to transfer data in and out of the container):
 
-+ -P = publish all exposed ports to the host interfaces
+  `docker run -itP -m 8g --name biodock -v /some/path/on/host/:/MOUNTED_VOLUME wpmr/biodock:latest`
 
-+ -m = memory limit (8gb)
+  + -i = keep STDIN open even if not attached
 
-+ --name = name for container at runtime (easy to use for later exec commands)
+  + -t = allocate a pseudo-tty
 
-+ -v = bind mount a volume (for data transfer etc. between container and host machine). Usage-> [host-src:]container-dest[:<options>]. The comma-delimited `options` are [rw|ro], [z|Z], [[r]shared|[r]slave|[r]private], and [nocopy].
+  + -P = publish all exposed ports to the host interfaces
+
+  + -m = memory limit (8gb)
+
+  + --name = name for container at runtime (easy to use for later exec commands)
+
+  + -v = bind mount a volume (for data transfer etc. between container and host machine). Usage-> [host-src:]container-dest[:<options>]. The comma-delimited `options` are [rw|ro], [z|Z], [[r]shared|[r]slave|[r]private], and [nocopy].
 
 
 
@@ -61,26 +61,26 @@ Contents
 2.	Usage
 ----
 
-⋅⋅⋅This Docker container (and git repo) is intended to provide a standardised environment for running bioinformatics pipelines, scripts and software.
+  This Docker container (and git repo) is intended to provide a standardised environment for running bioinformatics pipelines, scripts and software.
 
 
-⋅⋅⋅The container will launch bash by default, all software is in the path and scripts from the git repo are in /opt/SCRIPT_bin (also in path)
+  The container will launch bash by default, all software is in the path and scripts from the git repo are in /opt/SCRIPT_bin (also in path)
 
 
-⋅⋅⋅A few helpful commands for managing the container:
+  A few helpful commands for managing the container:
 
-+ Once exited, you can re-enter the container using the exec command:
+  + Once exited, you can re-enter the container using the exec command:
 
-`docker exec -it [CONTAINER ID] bash`
+  `docker exec -it [CONTAINER ID] bash`
 
-+ View all containers (both running and stopped) using:
+  + View all containers (both running and stopped) using:
 
-`docker ps -a`
+  `docker ps -a`
 
-+ Stop or remove all containers
+  + Stop or remove all containers
 
-`docker stop $(docker ps -a)`
-`docker rm $(docker ps -a)`
+  `docker stop $(docker ps -a)`
+  `docker rm $(docker ps -a)`
 
 
 
@@ -88,7 +88,6 @@ Contents
 3. Notes
 ----
 
-⋅⋅⋅The CPUs available to Docker are limited by the host machine running docker, so set the virtual machine to have the required number before running Docker.
+  + The CPUs available to Docker are limited by the host machine running docker, so set the virtual machine to have the required number before running Docker.
 
-
-⋅⋅⋅The Kernel scheduler will handle the resource contention in the case of multiple containers requiring multiple cores.
+  + The Kernel scheduler will handle the resource contention in the case of multiple containers requiring multiple cores.
