@@ -100,6 +100,22 @@ RUN cd /opt && \
 
 
 ################################################################################################
+# Install R, Bioconductor, R packages and dependencies
+################################################################################################
+RUN apt-get install -y \
+  r-base \
+  libxml2-dev \
+  libcurl4-openssl-dev
+RUN cd /opt && \
+  RREPO='"http://cran.rstudio.com/"' && \
+  printf "install.packages(\"ggplot2\", repo=$RREPO)\ninstall.packages(\"reshape\",repo=$RREPO)\ninstall.packages(\"gplots\",repo=$RREPO)\ninstall.packages(\"optparse\",repo=$RREPO)\ninstall.packages(\"XML\",repo=$RREPO)\ninstall.packages(\"getopt\",repo=$RREPO)" > dep.R && \
+  Rscript dep.R && \
+  rm dep.R && \
+  R -e 'source("http://bioconductor.org/biocLite.R"); biocLite(); biocLite(c("NOISeq", "Repitools", "Rsamtools", "rtracklayer"))' && \
+  cd /
+
+
+################################################################################################
 # Install Roary and dependencies
 ################################################################################################
 RUN apt-get install -y \
