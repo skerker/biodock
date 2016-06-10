@@ -211,7 +211,7 @@ RUN cd /opt && \
   find /opt/biodock/00_SCRIPTS/ -type f -name '*.py' -exec cp {} /opt/SCRIPT_bin/ \; && \
   find /opt/biodock/00_SCRIPTS/ -type f -name '*.pl' -exec cp {} /opt/SCRIPT_bin/ \; && \
   find /opt/biodock/00_SCRIPTS/ -type f -name '*.sh' -exec cp {} /opt/SCRIPT_bin/ \; && \
-  ln -s /opt/00_SCRIPTS/SCRIPTS_bin/* /usr/bin/ && \
+  ln -s /opt/SCRIPT_bin/* /usr/bin/ && \
   cp /opt/biodock/bashrc ~/.bashrc && \
   rm -rf /var/lib/apt/lists/*
 
