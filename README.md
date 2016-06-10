@@ -24,6 +24,7 @@ Contents
   If you are on a Mac, start your Docker machine:
 
   `docker-machine start MACHINE-NAME`
+
   `eval "$(docker-machine env MACHINE-NAME)"`
 
 
@@ -35,7 +36,9 @@ Contents
   Alternatively, clone this git and build the biodock image from the Dockerfile:
 
   `git clone https://gitlab.com/will_rowe/biodock.git`
+
   `cd biodock`
+
   `docker build -t wpmr/biodock:latest .`
 
 
@@ -80,6 +83,7 @@ Contents
   + Stop or remove all containers
 
   `docker stop $(docker ps -a)`
+  
   `docker rm $(docker ps -a)`
 
 
