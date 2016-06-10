@@ -1,6 +1,7 @@
 BIODOCK
 ====
 A Docker container that runs bioinformatics software.
+
 Biodock was created for bioinformatic analysis at the Hinton Lab.
 
 
@@ -83,7 +84,7 @@ Contents
   + Stop or remove all containers
 
   `docker stop $(docker ps -a)`
-  
+
   `docker rm $(docker ps -a)`
 
 
