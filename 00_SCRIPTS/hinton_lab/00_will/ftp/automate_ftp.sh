@@ -3,8 +3,8 @@
 
 #!/bin/sh
 HOST='webin.ebi.ac.uk'
-USER='Webin-1217'
-PASS='j6cJPKJN'
+USER='Webin-XXXX'
+PASS='XXXXXXXX'
 FILE=$1
 
 ftp -n $HOST <<END_SCRIPT

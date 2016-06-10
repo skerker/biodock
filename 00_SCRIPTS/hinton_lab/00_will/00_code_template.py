@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# This is a basic template that I made to quickly write some python scripts to take input files, do some functions and then create an ouput file
+
 import os, sys, getopt
 
 ################################################################################
@@ -33,7 +35,7 @@ if __name__ == "__main__":
     #print summary of arguments to terminal
     print ('\n\ninput file:\t{}\noutput file:\t{}\n'  .format(input, output))
 
-    #give input to function and return permutation list
+    #give input to function and return output
     returned_item = function(input)
 
 

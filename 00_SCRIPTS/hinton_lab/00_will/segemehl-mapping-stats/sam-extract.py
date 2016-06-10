@@ -48,7 +48,7 @@ if __name__ == "__main__":
     #print summary of arguments to terminal
     print ('\n\ninput file1:\t{}\ninput file2:\t{}\noutput file:\t{}\n'  .format(input1, input2, output))
 
-    #give input to function and return permutation list
+    #give input to function and return list
     returned_item = function(input1, input2)
 
 
