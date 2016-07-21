@@ -1,0 +1,40 @@
+### a few scribbles on GNU Parallel
+
+# set up servers:
+  # PARALLEL_HOSTS=ada05,ada06,ada07
+
+# make sure remote login is setup for each server:
+  # ssh-keygen -t dsa; ssh-copy-id -i .ssh/id_dsa.pub ada07
+
+# gnu parallel options:
+  # --workdir           sets the working directory
+  # --progress          prints progress to stdout
+  # -j 50%              half loads the machine (i.e. half the cores used to run jobs)
+  # -S                  server list to use
+  # --filter-hosts      ignore nodes that are down (this is currently broken in current gnu parallel release)
+
+
+
+
+
+
+
+# run Kraken on all gzipped fastq files:
+ls *.gz | parallel --progress --joblog LOGFILE.log --workdir $PWD --use-cpus-instead-of-cores --jobs 0 -S $PARALLEL_HOSTS "/pub46/willr/00_RNA-seq-pipeline/01_BIN/kraken --threads 10 --preload --fastq-input --gzip-compressed --db /pub46/willr/00_RNA-seq-pipeline/02_INDICES+REFS/minikraken_20141208 {} | /pub46/willr/00_RNA-seq-pipeline/01_BIN/kraken-report --db /pub46/willr/00_RNA-seq-pipeline/02_INDICES+REFS/minikraken_20141208 > ./QC_RESULTS/KRAKEN_RESULTS/{.}.testreport.txt"
+
+# unzip all fastq files (leaving original file):
+ls *.gz | parallel --progress --workdir $PWD -j 50% -S $PARALLEL_HOSTS "gunzip -c {} > ./RESULTS/RAW_DATA/{.}"
+
+# run fastqc on all fastq files:
+ls $PWD/RESULTS/RAW_DATA/*.fastq | parallel --progress --workdir $PWD -j 50% -S $PARALLEL_HOSTS "/usr/local/share/FastQC/fastqc -t 6 {} --outdir ./RESULTS/FASTQC_RESULTS"
+
+# index all bam files
+find *.bam | parallel samtools index {}
+
+
+
+
+
+
+# run rna-seq-pipeline
+ls /pub46/willr/000_HOME/0003_PROJECTS/rocio/00_seq_data/D23580/*.gz | parallel --progress --workdir $PWD -j 30% --delay 2.0 -S $PARALLEL_HOSTS "python $PWD/00_RNAseq_pipeline.py -i {} -o $PWD/qc_results >> $PWD/LOGS_test_run/{/.}.LOG"
