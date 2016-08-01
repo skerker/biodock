@@ -36,7 +36,7 @@ trimm_path = '/pub46/willr/000_HOME/0005_RNA-SEQ-PIPELINE/01_BIN/trimmomatic-0.3
 # default settings
 threads = '20'
 length_cutoff = '20'
-kraken_search = 'Salmonella'
+kraken_search_term = 'Salmonella\n'
 
 
 ################################################################################
@@ -129,7 +129,7 @@ def qc_data(input_fastq_file, results_sub_dir, file_basename, QC_results_file):
     # wait for subprocesses to complete:
     exit_codes = [p.wait() for p in processes2]
 
-    # retrieve QC stats - kraken results for trimmed data
+    # retrieve QC stats - use kraken log to find number of unclassified sequences and the total number of sequences in the trimmed dataset
     with open('{}/kraken.log' .format(results_sub_dir), 'r') as fh:
         kraken_lines = fh.readlines()
         kraken_unclassified = [line for line in kraken_lines if re.search('sequences unclassified ', line)]
@@ -140,7 +140,13 @@ def qc_data(input_fastq_file, results_sub_dir, file_basename, QC_results_file):
                 seq_num = seq_num_match.group(1)
                 break
             else:
-                seq_num = 'Could not parse Kraken file for seq num'
+                seq_num = 'Could not parse Kraken log file for seq num'
+
+    # retrieve QC stats - use krakenreport to find number of salmonella sequences
+    with open('{}/krakenreport' .format(results_sub_dir), 'r') as fh:
+        krakenreport_lines = fh.readlines()
+        kraken_search = [line for line in krakenreport_lines if re.search(kraken_search_term, line)]
+        sample_stats['kraken_search_result'] = kraken_search
 
     # retrieve QC stats - fastqc results for trimmed data
     trimmed_basename = os.path.basename(trimmed_data)
@@ -161,6 +167,14 @@ def qc_data(input_fastq_file, results_sub_dir, file_basename, QC_results_file):
     else:
         print ('\t\t*Kraken:\tunclassified sequences\t==>\terror with parsing kraken results\n')
         unclassified_reads = 'ERROR'
+    kraken_search_match = re.search('\s+(\d+\.\d+)', str(sample_stats["kraken_search_result"]))
+    if kraken_search_match:
+        print ('\t\t*Kraken:\tSalmonella sequences\t==>\t{}%' .format(kraken_search_match.group(1)))
+        search_term_reads = kraken_search_match.group(1)
+    else:
+        print ('\t\t*Kraken:\tSalmonella sequences\t==>\terror with parsing kraken results for search term ({})\n' .format(kraken_search_term))
+        search_term_reads = 'ERROR'
+
     # parse QC stats for results - fastqc
     if re.search('pass', str(sample_stats["fastqc_trimmed"][0])) is not None:
         print ('\t\t*FastQC:\tsequence base quality\t==>\tPASS')
