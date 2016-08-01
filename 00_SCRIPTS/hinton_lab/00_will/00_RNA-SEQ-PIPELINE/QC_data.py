@@ -8,7 +8,7 @@ import os, sys, subprocess, re, getopt
 
 This script QCs the supplied FASTQ file. It runs FastQC and Trimmomatic (with a sliding window, quality based trim), it then re-runs FastQC and inspects the reads with Kraken.
 
-version = 0.1
+version = 0.2
 author  = Will Rowe
 email = will.rowe@liverpool.ac.uk
 
@@ -19,6 +19,8 @@ email = will.rowe@liverpool.ac.uk
 This script is not complete:
     need to add customisation of parameters
     need to make stand alone (name==main)
+
+Still working the most appropriate interpretation of Kraken results. At the moment the script looks at the number of unclassified reads and the number belonging to our genus of interest (Salmonella). Considering adding a feature to raise a warning flag if either of these are outside a 'normal' range.
 
 
 """
@@ -36,7 +38,7 @@ trimm_path = '/pub46/willr/000_HOME/0005_RNA-SEQ-PIPELINE/01_BIN/trimmomatic-0.3
 # default settings
 threads = '20'
 length_cutoff = '20'
-kraken_search_term = 'Salmonella\n'
+kraken_search_term = 'Salmonella\n' # include \n to only match Genus in Kraken report file
 
 
 ################################################################################
@@ -199,7 +201,7 @@ def qc_data(input_fastq_file, results_sub_dir, file_basename, QC_results_file):
 
     # write results to file
     with open(QC_results_file, 'w') as fh:
-        fh.write('{}\t{}\t{}\t{}\t{}\t\t{}\t{}\t{}\t{}\t{}\t\n' .format(file_basename, seq_length, base_qual, len_dist, dropped_seqs, seq_length_trimmed, base_qual_trimmed, len_dist_trimmed, unclassified_reads, seq_num))
+        fh.write('{}\t{}\t{}\t{}\t{}\t\t{}\t{}\t{}\t{}\t{}%\t{}\t\n' .format(file_basename, seq_length, base_qual, len_dist, dropped_seqs, seq_length_trimmed, base_qual_trimmed, len_dist_trimmed, unclassified_reads, search_term_reads, seq_num))
 
     return trimmed_data
 

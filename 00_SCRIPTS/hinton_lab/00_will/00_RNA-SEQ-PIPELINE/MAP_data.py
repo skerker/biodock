@@ -72,7 +72,9 @@ def map_data(input_fastq_file, bt2_index, results_sub_dir, scratch, MAPPING_resu
 
     # run mapping with bowtie2
     try:
-        os.system(bt2_cmd)
+        #os.system(bt2_cmd)
+        p = subprocess.Popen(bt2_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        err = p.communicate()
     except Exception, e:
         print >> sys.stderr, 'Can\'t run mapping command . . .'
         print >> sys.stderr, 'Exception: %s' % str(e)
@@ -113,11 +115,13 @@ def map_data(input_fastq_file, bt2_index, results_sub_dir, scratch, MAPPING_resu
         idxstats_file = fh.readlines()
         for line in idxstats_file:
             columns = line.split()
+        # print mapped reads per reference to STDOUT
 	    if re.match('\*', str(columns[0])) is None:
 	        print ('{}\t{}\t{}' .format(columns[0], columns[2], columns[3]))
-            # write results to file
+            # write mapped reads per reference to file
             with open(MAPPING_results_file, 'a') as fh:
                 fh.write('{}\t{}\t{}\t' .format(columns[0], columns[2], columns[3]))
+        # append the file name and the number of mapped reads (pre-mapping filter) to the results file
         with open(MAPPING_results_file, 'a') as fh:
             fh.write('{}\t{}\n' .format(file_basename, init_mapped_reads))
 

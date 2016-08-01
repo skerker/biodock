@@ -42,7 +42,7 @@ First, set server list as a variable:
 Second, if outputing python STDOUT to log file, make sure directory for logs exist or error will be thrown
 
 Run GNU parallel by piping list of files that you want to run the pipeline on into the GNU parallel command:
-    ls /pub46/willr/000_HOME/0003_PROJECTS/rocio/00_seq_data/D23580/*.gz | parallel --progress --workdir $PWD -j 10% --delay 2.0 -S $PARALLEL_HOSTS "python $PWD/00_RNAseq_pipeline.py -i {} -o $PWD/qc_results >> $PWD/LOGS_test_run/{/.}.LOG"
+    ls /pub46/willr/000_HOME/0003_PROJECTS/rocio/00_seq_data/D23580/*.gz | parallel --progress --workdir $PWD -j 10% --delay 2.0 -S $PARALLEL_HOSTS "python /pub46/willr/000_HOME/0005_RNA-SEQ-PIPELINE/02_PIPELINE_FILES/00_RNAseq_pipeline.py -i {} -o $PWD/RESULTS -q Y -m Y -c Y -t Y -r D23 >> $PWD/LOGS/{/.}.LOG"
 
 Breakdown of GNU command:
        -j 10%            -   how much to load the receiving servers
