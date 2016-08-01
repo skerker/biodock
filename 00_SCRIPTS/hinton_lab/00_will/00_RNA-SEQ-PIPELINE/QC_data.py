@@ -35,6 +35,9 @@ trimm_path = '/pub46/willr/000_HOME/0005_RNA-SEQ-PIPELINE/01_BIN/trimmomatic-0.3
 
 # default settings
 threads = '20'
+length_cutoff = '20'
+kraken_search = 'Salmonella'
+
 
 ################################################################################
 ### FUNCTIONS
@@ -49,7 +52,7 @@ def qc_data(input_fastq_file, results_sub_dir, file_basename, QC_results_file):
 
     # QC commands
     fastqc_cmd = fastqc_path + ' -t ' + threads + ' ' + input_fastq_file + ' --outdir ' + results_sub_dir
-    trimm_cmd = trimm_path + ' SE -threads ' + threads + ' ' + input_fastq_file + ' ' + trimmed_data + ' ' + ' SLIDINGWINDOW:4:20 MINLEN:50' + ' &> ' + results_sub_dir + '/trimm.log'
+    trimm_cmd = trimm_path + ' SE -threads ' + threads + ' ' + input_fastq_file + ' ' + trimmed_data + ' ' + ' SLIDINGWINDOW:4:20 MINLEN:' + length_cutoff + ' &> ' + results_sub_dir + '/trimm.log'
     kraken_cmd = kraken_path + ' --threads ' + threads + ' --preload --fastq-input --gzip-compressed --db ' + kraken_db + ' ' + trimmed_data + ' | ' + kraken_report_path + ' --db ' + kraken_db + ' > ' + results_sub_dir + '/krakenreport'
     fastqc_cmd_2 = fastqc_path + ' -t ' + threads + ' ' + trimmed_data + ' --outdir ' + results_sub_dir
 

@@ -32,6 +32,8 @@ samtools_path = '/usr/local/bin/samtools'
 
 # default settings
 threads = '20'
+MAPQ_score = '10'
+
 
 ################################################################################
 ### FUNCTIONS
@@ -46,7 +48,7 @@ def map_data(input_fastq_file, bt2_index, results_sub_dir, scratch, MAPPING_resu
     # commands
     bt2input = scratch + '/bt2.input.fq'
     bt2output_bam = results_sub_dir + '/bt2.output.bam'
-    sorted_filtered_bam = results_sub_dir + '/bt2.output.bam.q10_filter.sorted.bam'
+    sorted_filtered_bam = results_sub_dir + '/bt2.output.bam.q' + MAPQ_score + '_filter.sorted.bam'
     flagstats = results_sub_dir + '/00_mapping.flagstats'
     idxstats = results_sub_dir + '/00_mapping.idxstats'
     gunzip_cmd = 'gzip -cd ' + input_fastq_file + ' > ' + bt2input
@@ -54,9 +56,9 @@ def map_data(input_fastq_file, bt2_index, results_sub_dir, scratch, MAPPING_resu
     sort_bam_cmd_1 = samtools_path + ' sort ' + bt2output_bam + ' ' + bt2output_bam + '.sorted'
     index_bam_cmd_1 = samtools_path + ' index ' + bt2output_bam + '.sorted.bam'
     mapped_reads_cmd = 'samtools view -F 0x904 -c ' + bt2output_bam + '.sorted.bam'
-    min_map_qual_cmd = samtools_path + ' view -q 10 -b ' + bt2output_bam + ' > ' + bt2output_bam + '.q10_filter.bam'
-    sort_bam_cmd = samtools_path + ' sort ' + bt2output_bam + '.q10_filter.bam ' + bt2output_bam + '.q10_filter.sorted'
-    index_bam_cmd = samtools_path + ' index ' + bt2output_bam + '.q10_filter.sorted.bam'
+    min_map_qual_cmd = samtools_path + ' view -q ' + MAPQ_score + ' -b ' + bt2output_bam + ' > ' + bt2output_bam + '.q' + MAPQ_score + '_filter.bam'
+    sort_bam_cmd = samtools_path + ' sort ' + bt2output_bam + '.q' + MAPQ_score + '_filter.bam ' + bt2output_bam + '.q' + MAPQ_score + '_filter.sorted'
+    index_bam_cmd = samtools_path + ' index ' + bt2output_bam + '.q' + MAPQ_score + '_filter.sorted.bam'
     flagstat_cmd = samtools_path + ' flagstat ' + sorted_filtered_bam + ' > ' + flagstats
     idxstats_cmd = samtools_path + ' idxstats ' + sorted_filtered_bam + ' > ' + idxstats
 
@@ -87,7 +89,7 @@ def map_data(input_fastq_file, bt2_index, results_sub_dir, scratch, MAPPING_resu
         print >> sys.stderr, 'Exception: %s' % str(e)
         sys.exit(1)
 
-    # filter for MAPQ > 10, sort and index filtered bam file
+    # filter for MAPQ > MAPQ_score, sort and index filtered bam file
     try:
         os.system(min_map_qual_cmd)
         os.system(sort_bam_cmd)
