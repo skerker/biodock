@@ -38,6 +38,7 @@ trimm_path = '/pub46/willr/000_HOME/0005_RNA-SEQ-PIPELINE/01_BIN/trimmomatic-0.3
 # default settings
 threads = '20'
 length_cutoff = '20'
+results_sub_dir = '.'
 kraken_search_term = 'Salmonella\n' # include \n to only match Genus in Kraken report file
 
 
@@ -48,7 +49,7 @@ QC data
 this function runs FastQC and Trimmomatic on the raw fastq data, then runs Kraken and FastQC on the trimmed reads.
 returns a QC results file and fastq.gz file of trimmed reads
 """
-def qc_data(input_fastq_file, results_sub_dir, file_basename, QC_results_file):
+def qc_data(input_fastq_file, length_cutoff, results_sub_dir, file_basename, QC_results_file):
     # save trimmed input data as
     trimmed_data = results_sub_dir + '/trimmed.' + file_basename
 
@@ -208,4 +209,62 @@ def qc_data(input_fastq_file, results_sub_dir, file_basename, QC_results_file):
 
 ################################################################################
 ### MAIN SCRIPT
-#if __name__ == "__main__":
+if __name__ == "__main__":
+
+    # read commandline arguments and create variables
+    I_met, O_met = (False,)*3
+    try:
+        myopts, args = getopt.getopt(sys.argv[1:],'i:o:d:l:')
+    except getopt.GetoptError as e:
+        print (str(e))
+        print ('usage: {} -i [input .fastq.gz file] -o [output file] -d [directory for output files] -l [length cut-off value]' .format(sys.argv[0]))
+        sys.exit(2)
+    for option, argument in myopts:
+        # get input file (required)
+        if option == '-i':
+            input_fastq_file = os.path.abspath(argument)
+            try:
+                os.path.isfile(input_fastq_file)
+            except Exception, e:
+                print >> sys.stderr, 'Supplied input does not appear to be a file . . .'
+                print >> sys.stderr, 'Exception: %s' % str(e)
+                sys.exit(1)
+            file_basename = os.path.basename(input_fastq_file)
+        I_met = True
+        # get name for QC summary file (required)
+        if option == '-o':
+            QC_results_file = os.path.abspath(argument)
+        O_met = True
+        # get directory for output files (kraken report etc.)
+        if option == '-d':
+            results_sub_dir = os.path.abspath(argument)
+            if not os.path.exists(results_sub_dir):
+                try:
+                    os.makedirs(results_sub_dir)
+                except Exception, e:
+                    print >> sys.stderr, 'Can\'t create the supplied results directory . . .'
+                    print >> sys.stderr, 'Exception: %s' % str(e)
+                    sys.exit(1)
+        # get length cutoff value
+        if option == '-l':
+            length_cutoff = argument
+            try:
+                length_cutoff.isdigit()
+            except Exception, e:
+                print >> sys.stderr, 'The supplied length cut-off value does not appear to be a digit . . .'
+                print >> sys.stderr, 'Exception: %s' % str(e)
+                sys.exit(1)
+
+    if not any((I_met, O_met)):
+	print ('options i and o must both be supplied!\n')
+	print ('usage: {} -i [input .fastq.gz file] -o [output file] -d [directory for output files] -l [length cut-off value]' .format(sys.argv[0]))
+	sys.exit(2)
+
+
+    # run the QC module
+    try:
+        QC_results = qc_data(input_fastq_file, length_cutoff, results_sub_dir, file_basename, QC_results_file)
+    except Exception, e:
+        print >> sys.stderr, 'Can\'t run QC module . . .'
+        print >> sys.stderr, 'Exception: %s' % str(e)
+        sys.exit(1)

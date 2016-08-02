@@ -45,7 +45,7 @@ Run GNU parallel by piping list of files that you want to run the pipeline on in
     ls /pub46/willr/000_HOME/0003_PROJECTS/rocio/00_seq_data/D23580/*.gz | parallel --progress --workdir $PWD -j 10% --delay 2.0 -S $PARALLEL_HOSTS "python /pub46/willr/000_HOME/0005_RNA-SEQ-PIPELINE/02_PIPELINE_FILES/00_RNAseq_pipeline.py -i {} -o $PWD/RESULTS -q Y -m Y -c Y -t Y -r D23 >> $PWD/LOGS/{/.}.LOG"
 
 Breakdown of GNU command:
-       -j 10%            -   how much to load the receiving servers
+       -j 10%            -   how much to load the receiving servers (number of cores to use)
        --delay 2.0       -   run with delay between jobs (otherwise there are conflicts with scratch directory naming)   *** REQUIRED ***
        -S                -   server list to use
        --progress        -   prints job progress to STDOUT
@@ -85,11 +85,14 @@ gff_474 = ''
 # default settings
 threads = '20'
 run_QC = False
+length_cutoff = '20'
 run_MAP = False
-run_COUNT = False
-run_TPM = False
 bt2_index = bt2_D23_index
+run_COUNT = False
 gff_file = gff_D23
+run_TPM = False
+
+
 
 
 ################################################################################
@@ -183,7 +186,7 @@ if __name__ == "__main__":
 
     # read commandline arguments and create variables
     try:
-        myopts, args = getopt.getopt(sys.argv[1:],'i:o:q:m:c:t:r:')
+        myopts, args = getopt.getopt(sys.argv[1:],'i:o:q:l:m:c:t:r:')
     except getopt.GetoptError as e:
         print (str(e))
         print ('usage: {} -i single fastq file (fastq.gz) -o directory for output files -q Y -m Y -c Y -t Y-r D23' .format(sys.argv[0]))
@@ -213,6 +216,15 @@ if __name__ == "__main__":
                 run_QC = False
             else:
                 print >> sys.stderr, 'Please specify Y or N for the q option . . .'
+                sys.exit(1)
+        # get length cutoff value
+        if option == '-l':
+            length_cutoff = argument
+            try:
+                length_cutoff.isdigit()
+            except Exception, e:
+                print >> sys.stderr, 'The supplied length cut-off value does not appear to be a digit . . .'
+                print >> sys.stderr, 'Exception: %s' % str(e)
                 sys.exit(1)
         if option == '-m':
             if argument == 'Y':
@@ -271,10 +283,10 @@ if __name__ == "__main__":
     if run_QC == True:
         print ('{}\n## QC-ing data\n{}' .format(border, border))
         print ('\n\n\t*Input file\t==>\t{}\n\n' .format(input_fastq_file))
-        print ('\t*Spawning FastQC job to check raw data . . .\n\n\n\t*Running Trimmomatic (with os.system) to check raw data . . .\n\n')
+        print ('\t*Spawning FastQC job to check raw data . . .\n\n\n\t*Running Trimmomatic (with os.system) to check raw data (length cutoff = {}). . .\n\n' .format(length_cutoff))
 
         try:
-            trimmed_data = QC_data.qc_data(input_fastq_file, results_sub_dir, file_basename, QC_results_file)
+            trimmed_data = QC_data.qc_data(input_fastq_file, length_cutoff, results_sub_dir, file_basename, QC_results_file)
         except Exception, e:
             print >> sys.stderr, 'Can\'t run QC . . .'
             print >> sys.stderr, 'Exception: %s' % str(e)
