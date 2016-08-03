@@ -42,7 +42,7 @@ First, set server list as a variable:
 Second, if outputing python STDOUT to log file, make sure directory for logs exist or error will be thrown
 
 Run GNU parallel by piping list of files that you want to run the pipeline on into the GNU parallel command:
-    ls /pub46/willr/000_HOME/0003_PROJECTS/rocio/00_seq_data/D23580/*.gz | parallel --progress --workdir $PWD -j 10% --delay 2.0 -S $PARALLEL_HOSTS "python /pub46/willr/000_HOME/0005_RNA-SEQ-PIPELINE/02_PIPELINE_FILES/00_RNAseq_pipeline.py -i {} -o $PWD/RESULTS -q Y -m Y -c Y -t Y -r D23 >> $PWD/LOGS/{/.}.LOG"
+    ls /pub46/willr/000_HOME/0003_PROJECTS/rocio/00_seq_data/D23580/*.gz | parallel --progress --workdir $PWD -j 2% --delay 2.0 -S $PARALLEL_HOSTS "python /pub46/willr/000_HOME/0005_RNA-SEQ-PIPELINE/02_PIPELINE_FILES/00_RNAseq_pipeline.py -i {} -o $PWD/RESULTS -q Y -l 40 -m Y -c Y -t Y -r D23 >> $PWD/LOGS/{/.}.LOG"
 
 Breakdown of GNU command:
        -j 10%            -   how much to load the receiving servers (number of cores to use)
@@ -75,17 +75,17 @@ scratch = '/scratch/will___' + start_time.strftime('%H%M%S')
 htseq_path = '/usr/local/bin/htseq-count'
 
 # bowtie2 reference indices
-bt2_D23_index = '/pub46/willr/000_HOME/0002_REF_DATA/0002_BT2_REFS/D23580_liv/D23580_liv_chrom+4plasmids'
-bt2_474_index = '/pub46/willr/000_HOME/0002_REF_DATA/0002_BT2_REFS/474/474_chrom+3plasmids'
+bt2_D23_index = '/pub46/willr/000_HOME/0002_REF_DATA/0002_BT2_REFS/D23580_liv/D23580_liv_2016_chrom_4plasmids'
+bt2_474_index = '/pub46/willr/000_HOME/0002_REF_DATA/0002_BT2_REFS/ST474_liv/ST474_liv_2016_chrom_3plasmids'
 
 # annotation files
-gff_D23 = '/pub46/willr/000_HOME/0002_REF_DATA/0003_ANNOTATIONS/D23580_liv/D23580_liv_2016.gff'
-gff_474 = ''
+gff_D23 = '/pub46/willr/000_HOME/0002_REF_DATA/0003_ANNOTATIONS/D23580_liv/D23580_liv_2016_chrom_pSLTBT_pBT1.gff'
+gff_474 = '/pub46/willr/000_HOME/0002_REF_DATA/0003_ANNOTATIONS/ST474_liv/ST474_liv_2016_chrom_3plasmids.gff'
 
 # default settings
 threads = '20'
 run_QC = False
-length_cutoff = '20'
+length_cutoff = '40'
 run_MAP = False
 bt2_index = bt2_D23_index
 run_COUNT = False
